@@ -1,13 +1,14 @@
 const Router = require("express").Router();
 const validate = require("../middleware/validate.middleware");
-const schema = require("../validations/postValidation.schema");
+const { updatePostSchema, createPostSchema } = require("../validations/postValidation.schema");
+const { createBlog, getBlogs, getBlogById, updateBlog, deleteBlog } = require("../controllers/blogController");
 
 
-Router.get("/", async (req, res) => {
-  try {
-    const blogs = await Blog.find();
-    res.status(200).json(blogs);
-  } catch (error) {
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-});
+Router.get("/",  getBlogs);
+Router.post("/", validate(createPostSchema), createBlog);
+Router.get("/:id", getBlogById);
+Router.put("/:id", validate(updatePostSchema), updateBlog);
+Router.delete("/:id", deleteBlog);
+
+
+module.exports = Router;
