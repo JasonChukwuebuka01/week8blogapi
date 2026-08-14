@@ -12,6 +12,7 @@ const createBlog = async (req, res, next) => {
         const newBlog = await Blog.create({
             title,
             content,
+            author: req.user.id, 
         });
 
         try {
