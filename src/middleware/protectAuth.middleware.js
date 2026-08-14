@@ -24,7 +24,7 @@ const protectAuth = async (req, res, next) => {
         .json({ message: "Unauthorized: User no longer exists" });
     }
 
-    // 3. Attach sanitized user to request object
+   
     req.user = {
       id: verifyUser._id,
       name: verifyUser.name,
@@ -33,7 +33,6 @@ const protectAuth = async (req, res, next) => {
 
     next();
   } catch (err) {
-    // Catch JWT-specific errors cleanly
     if (err.name === "JsonWebTokenError" || err.name === "TokenExpiredError") {
       return res.status(401).json({ message: "Invalid or expired token" });
     }
