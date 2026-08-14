@@ -12,10 +12,8 @@ const BlogSchema = new mongoose.Schema(
       required: [true, "Content is required"],
     },
     author: {
-      id: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-      },
+        ref: "User"
     },
   },
   {
