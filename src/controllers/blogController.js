@@ -5,10 +5,14 @@ const createBlog = async (req, res, next) => {
   try {
     const { title, content } = req.body;
 
+
+     const images = req.files ? req.files.map((file) => ({ url: file.path })) : [];
+
     const newBlog = await Blog.create({
       title,
       content,
       author: req.user.id,
+      images
     });
 
     try {
