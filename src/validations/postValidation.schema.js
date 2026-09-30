@@ -10,6 +10,7 @@ const createPostSchema = Joi.object({
         "string.empty": "Content is required",
         "string.min": "Content should not be less than 10 characters",
     }),
+    images: Joi.array().items(Joi.string()).optional(),
 });
 
 const updatePostSchema = Joi.object({
@@ -20,6 +21,7 @@ const updatePostSchema = Joi.object({
     content: Joi.string().min(10).messages({
         "string.min": "Content should not be less than 10 characters",
     }),
+    images: Joi.array().items(Joi.string()).optional(),
 }).min(1).messages({
     "object.min": "Please provide at least one field to update",
 });
