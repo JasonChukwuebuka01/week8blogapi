@@ -5,14 +5,15 @@ const createBlog = async (req, res, next) => {
   try {
     const { title, content } = req.body;
 
-
-     const images = req.files ? req.files.map((file) => ({ url: file.path })) : [];
+    const images = req.files
+      ? req.files.map((file) => ({ url: file.path }))
+      : [];
 
     const newBlog = await Blog.create({
       title,
       content,
       author: req.user.id,
-      images
+      images,
     });
 
     try {
@@ -60,6 +61,7 @@ const getBlogById = async (req, res, next) => {
 
 
 
+
 // Update a blog by ID
 const updateBlog = async (req, res, next) => {
   try {
@@ -69,28 +71,42 @@ const updateBlog = async (req, res, next) => {
       return res.status(404).json({ message: "Blog not found" });
     }
 
-    // Extract author ID directly from the populated author object
+    // Check ownership
     const authorId = blog.author._id
       ? blog.author._id.toString()
       : blog.author.toString();
 
-    // Check ownership
     if (authorId !== req.user.id.toString()) {
       return res
         .status(403)
         .json({ message: "Forbidden: You can only update your own blogs" });
     }
 
-    const updatedBlog = await Blog.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true,
-    });
+    // Build update object
+    const updateData = { ...req.body };
+
+    // If new files were uploaded via Multer, parse and replace the images field
+    if (req.files && req.files.length > 0) {
+      updateData.images = req.files.map((file) => ({ url: file.path }));
+    }
+
+    const updatedBlog = await Blog.findByIdAndUpdate(
+      req.params.id,
+      updateData,
+      {
+        new: true,
+        runValidators: true,
+      },
+    );
 
     res.status(200).json(updatedBlog);
   } catch (error) {
     next(error);
   }
 };
+
+
+
 
 // Delete a blog by ID
 const deleteBlog = async (req, res, next) => {
