@@ -23,6 +23,9 @@ const user = new mongoose.Schema(
   {
     timestamps: true,
   },
+  {
+    versionKey: false,
+  }
 );
 
 module.exports = mongoose.model("User", user);
